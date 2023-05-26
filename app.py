@@ -175,6 +175,27 @@ def show_all_tags():
 	tags = Tag.query.all()
 	return render_template('tag_list.html', tags=tags)
 
+
+@app.route('/tags/new')
+def create_new_tag():
+	"""Shows form to create a new tag"""
+
+	return render_template('create_tag.html')
+
+
+@app.route('/tags/new', methods=['POST'])
+def add_new_tag():
+	"""Adds new tag to a post"""
+
+	name = request.form['tagname']
+	new_tag = Tag(name=name)
+
+	db.session.add(new_tag)
+	db.session.commit()
+
+	return redirect('/tags')
+
+
 @app.route('/tags/<int:tag_id>')
 def show_tag(tag_id):
 	"""Shows details of tag"""
@@ -183,12 +204,37 @@ def show_tag(tag_id):
 	
 	return render_template('tag_details.html', tag=tag)
 
-@app.route('/tags/new')
-def create_new_tag():
-	"""Shows form to create a new tag"""
 
-	return render_template('create_tag.html')
+@app.route('/tags/<int:tag_id>/edit')
+def edit_tag(tag_id):
+	"""Shows form to edit existing tag"""
 
+	tag = Tag.query.get_or_404(tag_id)
+	return render_template('edit_tag.html', tag=tag)
+
+
+@app.route('/tags/<int:tag_id>/edit', methods=['POST'])
+def update_tag(tag_id):
+	"""Updates existing tag"""
+
+	tag = Tag.query.get_or_404(tag_id)
+
+	tag.name = request.form['tagname']
+
+	db.session.add(tag)
+	db.session.commit()
+
+	return redirect('/tags')
+
+
+@app.route('/tags/<int:tag_id>/delete')
+def delete_tag(tag_id):
+	"""Deletes existing tag"""
+	
+	tag = Tag.query.filter_by(id=tag_id).delete()
+	db.session.commit()
+
+	return redirect('/tags')
 
 
 
