@@ -27,10 +27,10 @@ db.session.commit()
 # ******* POSTS **************
 
 # Add posts
-feelings = Post(title='Not Sure', content="I'm not sure if I can act on these feelings.", user=tess)
-navigation = Post(title='Navigation', content='I will teach you how to navigate the wilderness if you get lost.', user=joel)
-my_girl = Post(title='My Girl', content='She reminds me of her so much.', user=joel)
-trust = Post(title='Trust No One', content='Keep it a secret and you will live.', user=ellie)
+feelings = Post(title='Not Sure', content="I'm not sure if I can act on these feelings.", user_id=tess.id)
+navigation = Post(title='Navigation', content='I will teach you how to navigate the wilderness if you get lost.', user_id=joel.id)
+my_girl = Post(title='My Girl', content='She reminds me of her so much.', user_id=joel.id)
+trust = Post(title='Trust No One', content='Keep it a secret and you will live.', user_id=ellie.id)
 
 # Add new posts to session
 db.session.add_all([feelings, navigation, my_girl, trust])
@@ -40,8 +40,8 @@ db.session.commit()
 # ******* TAGS **************
 
 # Add tags
-t1 = Tag(name='love', hashtags=[PostTag(post_id=feelings.id)])
-t2 = Tag(name='survive', hashtags=[PostTag(post_id=trust.id)])
+t1 = Tag(name='love', posts=[feelings])
+t2 = Tag(name='survive', posts=[trust])
 
 # Add new tags to session
 db.session.add_all([t1, t2])

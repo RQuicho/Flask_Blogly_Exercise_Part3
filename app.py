@@ -2,7 +2,7 @@
 
 from flask import Flask, request, render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Post
+from models import db, connect_db, User, Post, PostTag, Tag
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly_db'
@@ -28,7 +28,7 @@ def list_all_users():
 	"""Shows list of all users in db"""
 
 	users = User.query.all()
-	return render_template('list.html', users=users)
+	return render_template('user_list.html', users=users)
 
 @app.route('/users/new')
 def create_new_user():
@@ -164,6 +164,31 @@ def delete_post(post_id):
 
 	return redirect(f'/users')
 	# return redirect(f'/users/{user_id}')
+
+
+# **************** TAGS ***********************************
+
+@app.route('/tags')
+def show_all_tags():
+	"""Shows all current tags"""
+
+	tags = Tag.query.all()
+	return render_template('tag_list.html', tags=tags)
+
+@app.route('/tags/<int:tag_id>')
+def show_tag(tag_id):
+	"""Shows details of tag"""
+
+	tag = Tag.query.get_or_404(tag_id)
+	
+	return render_template('tag_details.html', tag=tag)
+
+@app.route('/tags/new')
+def create_new_tag():
+	"""Shows form to create a new tag"""
+
+	return render_template('create_tag.html')
+
 
 
 

@@ -27,11 +27,10 @@ class Post(db.Model):
 	title = db.Column(db.Text, nullable=False)
 	content = db.Column(db.Text, nullable=False)
 	created_at = db.Column(db.DateTime, default=datetime.utcnow)
-	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+	user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 	user = db.relationship('User', backref='posts')
-	hashtags = db.relationship('PostTag', backref='post')
-	tags = db.relationship('Tag', secondary='posts_tags', backref='posts')
+	# hashtags = db.relationship('PostTag', backref='post')
 
 	def __repr__(self):
 		return f"< Post {self.title} {self.content} {self.created_at} {self.user_id} >"
@@ -49,10 +48,10 @@ class Tag(db.Model):
 	__tablename__ = 'tags'
 
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-	name = db.Column(db.Text, unique=True)
+	name = db.Column(db.Text, unique=True, nullable=False)
 
-	hashtags = db.relationship('PostTag', backref='tag')
+	posts = db.relationship('Post', secondary='posts_tags', backref='tags')
 
 	def __repr__(self):
-		return f"< Tag {self.name} >"
+		return f"< Tag {self.name} {self.posts} >"
 
