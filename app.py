@@ -102,7 +102,8 @@ def new_post(user_id):
 	"""Shows form to add a post for that user"""
 
 	user = User.query.get_or_404(user_id)
-	return render_template('create_post.html', user=user)
+	tags = Tag.query.all()
+	return render_template('create_post.html', user=user, tags=tags)
 
 
 @app.route('/users/<int:user_id>/posts/new', methods=['POST'])
@@ -110,11 +111,13 @@ def add_new_post(user_id):
 	"""Adds new post to list of posts by existing user"""
 
 	user = User.query.get_or_404(user_id)
+	tag_ids = [int(num) for num in request.form.getlist('tags')]
+	tags = Tag.query.filter(Tag.id.in_(tag_ids)).all()
 
 	title = request.form['title']
 	content = request.form['content']
 
-	new_post = Post(title=title, content=content, user_id=user_id)
+	new_post = Post(title=title, content=content, user=user, tags=tags)
 
 	db.session.add(new_post)
 	db.session.commit()
@@ -135,7 +138,8 @@ def edit_post(post_id):
 	"""Shows form to edit existing post"""
 
 	post = Post.query.get_or_404(post_id)
-	return render_template('edit_post.html', post=post)
+	tags = Tag.query.all()
+	return render_template('edit_post.html', post=post, tags=tags)
 
 
 @app.route('/posts/<int:post_id>/edit', methods=['POST'])
@@ -143,6 +147,8 @@ def update_post(post_id):
 	"""Updates existing post"""
 
 	post = Post.query.get_or_404(post_id)
+	tag_ids = [int(num) for num in request.form.getlist('tags')]
+	post.tags = Tag.query.filter(Tag.id.in_(tag_ids)).all()
 
 	post.title = request.form['title']
 	post.content = request.form['content']
@@ -230,7 +236,7 @@ def update_tag(tag_id):
 @app.route('/tags/<int:tag_id>/delete')
 def delete_tag(tag_id):
 	"""Deletes existing tag"""
-	
+
 	tag = Tag.query.filter_by(id=tag_id).delete()
 	db.session.commit()
 

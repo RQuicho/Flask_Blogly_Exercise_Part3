@@ -8,7 +8,7 @@
 
 <form action="/tags/{{tag.id}}/edit", method="POST">
   <label for="tagname">Name</label>
-  <input type="text" name="tagname" placeholder="Enter a name for the tag">
+  <input type="text" name="tagname" value="{{tag.name}}">
   <br>
   <a href="/tags/{{tag.id}}">Cancel</a>
   <button>Edit</button>
